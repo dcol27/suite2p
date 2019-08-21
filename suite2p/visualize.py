@@ -8,6 +8,7 @@ from matplotlib.colors import hsv_to_rgb
 from matplotlib import cm
 import time
 import sys,os
+from scipy import io
 from rastermap.mapping import Rastermap
 #from mapping import Rastermap
 from suite2p import gui,fig
@@ -392,10 +393,11 @@ class VisWindow(QtGui.QMainWindow):
                           init=ops['init'], alpha=ops['alpha'], K=ops['K'], constraints=ops['constraints'],
                           annealing=ops['annealing'])
             self.model.fit(self.sp)
-            #proc  = {'embedding': model.embedding, 'uv': [model.u, model.v],
-            #         'ops': ops, 'filename': args.S, 'train_time': train_time}
-            #basename, fname = os.path.split(args.S)
-            #np.save(os.path.join(basename, 'embedding.npy'), proc)
+            proc  = {'embedding': self.model.embedding, 'uv': [self.model.u, self.model.v],
+                     'ops': ops, 'icell': self.cells}
+            #basename, fname = os.path.split(args.S)         
+            np.save(os.path.join(parent.basename, 'embedding.npy'), proc)
+            io.savemat(os.path.join(parent.basename, 'embedding.mat'), proc)
             print('raster map computed in %3.2f s'%(time.time()-self.tic))
             self.activate(parent)
         except:
